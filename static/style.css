@@ -1,0 +1,28 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background: #e3e5e8;
+    padding: 40px;
+}
+h2 {
+    color: #043724;
+}
+form input, button {
+    padding: 8px;
+    margin: 5px;
+}
+table {
+    width: 80%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid #979595;
+}
+th {
+    background: #093b25;
+    color: rgb(255, 255, 255);
+}
+td, th {
+    padding: 8px;
+    text-align: left;
+}
