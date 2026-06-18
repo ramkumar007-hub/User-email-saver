@@ -1,6 +1,6 @@
-# 📧 User Email Saver
+# 📧 User Management System
 
-A simple and clean **User Management System** built with Flask and SQLite. Add users with their name and email, and view them in a neatly styled table — all in a lightweight full-stack Python application.
+A simple and clean **User Management System** built with Flask and SQLite. Add users with their name and email, search through them, and delete them — all in a lightweight full-stack Python application.
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue?logo=python)
 ![Flask](https://img.shields.io/badge/Flask-3.x-green?logo=flask)
@@ -13,6 +13,9 @@ A simple and clean **User Management System** built with Flask and SQLite. Add u
 
 - ➕ **Add Users** — Submit a name and email through a clean form
 - 📋 **View All Users** — See all saved users in a structured table
+- 🔍 **Search** — Filter users by name or email with a live search bar
+- 🗑️ **Delete Users** — Remove users with a confirmation dialog
+- 🛡️ **Input Validation** — Length limits, duplicate checks, and user cap to prevent crashes
 - 💾 **Persistent Storage** — Data saved in a local SQLite database
 - 🎨 **Clean UI** — Minimal, responsive design with custom CSS
 - ⚡ **Lightweight** — No heavy frameworks, just Flask + SQLite
@@ -21,12 +24,12 @@ A simple and clean **User Management System** built with Flask and SQLite. Add u
 
 ## 🛠️ Tech Stack
 
-| Layer        | Technology       |
-|-------------|------------------|
-| **Backend**  | Python 3, Flask  |
-| **Database** | SQLite3          |
-| **Frontend** | HTML, CSS        |
-| **Templating** | Jinja2 (Flask) |
+| Layer          | Technology       |
+|---------------|------------------|
+| **Backend**    | Python 3, Flask  |
+| **Database**   | SQLite3          |
+| **Frontend**   | HTML, CSS        |
+| **Templating** | Jinja2 (Flask)   |
 
 ---
 
@@ -34,12 +37,13 @@ A simple and clean **User Management System** built with Flask and SQLite. Add u
 
 ```
 python-fullstack-task1/
-├── app.py              # Flask application (routes, DB logic)
+├── app.py              # Flask application (routes, DB logic, validation)
 ├── database.db         # SQLite database (users table)
 ├── static/
 │   └── style.css       # Stylesheet for the UI
 ├── templates/
-│   └── index.html      # Main page template (form + user table)
+│   └── index.html      # Main page template (form, search, user table)
+├── LICENSE             # MIT License
 └── README.md           # This file
 ```
 
@@ -63,7 +67,7 @@ cd User-email-saver
 **2. Create a virtual environment (recommended)**
 ```bash
 python -m venv .venv
-source .venv/bin/activate    # Linux/Mac
+source .venv/bin/activate    # Linux / Mac / Arch (zsh)
 # .venv\Scripts\activate     # Windows
 ```
 
@@ -86,20 +90,23 @@ http://127.0.0.1:5000
 
 ## 📸 Screenshots
 
-### Home Page — Add & View Users
+### Home Page — Add, Search & Delete Users
 ```
-┌──────────────────────────────────────┐
-│       User Management System         │
-│                                      │
-│  [Name________] [Email________] [+]  │
-│                                      │
-│  ┌────┬──────────┬────────────────┐  │
-│  │ ID │   Name   │     Email      │  │
-│  ├────┼──────────┼────────────────┤  │
-│  │  1 │ John     │ john@mail.com  │  │
-│  │  2 │ Jane     │ jane@mail.com  │  │
-│  └────┴──────────┴────────────────┘  │
-└──────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│          User Management System              │
+│                                              │
+│  [Name________] [Email________] [Add User]   │
+│                                              │
+│  [Search___________________] [Search] [Clear]│
+│  3 user(s) shown                             │
+│  ┌────┬──────────┬───────────────┬────────┐  │
+│  │ ID │   Name   │     Email     │ Action │  │
+│  ├────┼──────────┼───────────────┼────────┤  │
+│  │  1 │ John     │ john@mail.com │[Delete]│  │
+│  │  2 │ Jane     │ jane@mail.com │[Delete]│  │
+│  │  3 │ Bob      │ bob@mail.com  │[Delete]│  │
+│  └────┴──────────┴───────────────┴────────┘  │
+└──────────────────────────────────────────────┘
 ```
 
 ---
@@ -118,31 +125,47 @@ CREATE TABLE users (
 
 ## 🔌 API Routes
 
-| Method | Route | Description                     |
-|--------|-------|---------------------------------|
-| `GET`  | `/`   | Render page with all users      |
-| `POST` | `/`   | Add a new user (name + email)   |
+| Method | Route              | Description                          |
+|--------|--------------------|--------------------------------------|
+| `GET`  | `/`                | Render page with all users           |
+| `POST` | `/`                | Add a new user (name + email)        |
+| `GET`  | `/?q=<search>`     | Search users by name or email        |
+| `POST` | `/delete/<user_id>`| Delete a user by ID                  |
+
+---
+
+## 🛡️ Input Validation & Safety
+
+| Protection            | Details                                  |
+|-----------------------|------------------------------------------|
+| **Required fields**   | Name and email cannot be empty           |
+| **Name length**       | Max 50 characters (`MAX_NAME_LEN`)       |
+| **Email length**      | Max 100 characters (`MAX_EMAIL_LEN`)     |
+| **Duplicate email**   | Prevents registering the same email twice|
+| **User cap**          | Max 50 users total (`MAX_USERS`)         |
+| **SQL Injection**     | All queries use parameterized statements |
+| **Delete confirm**    | Browser confirmation dialog before delete|
+| **POST for delete**   | Destructive action uses POST, not GET    |
 
 ---
 
 ## 🧩 How It Works
 
-1. **User fills the form** → Name + Email submitted via POST
-2. **Flask receives data** → Inserts into SQLite `users` table
-3. **Page redirects** → GET request fetches all users from DB
-4. **Jinja2 renders** → Users displayed in the HTML table
+1. **Add User** → Name + Email submitted via POST → validated → inserted into SQLite → page reloads
+2. **Search** → Query sent via GET with `?q=` → `LIKE` query filters results → table updates
+3. **Delete User** → POST to `/delete/<id>` → confirmation dialog → row removed → page reloads
+4. **Validation** → Every input is checked server-side (length, duplicates, capacity) with user-friendly error messages
 
 ---
 
 ## 🔮 Future Improvements
 
 - [ ] ✏️ Edit user functionality
-- [ ] 🗑️ Delete user button
-- [ ] 🔍 Search / filter users
-- [ ] ✅ Form validation (duplicate email check)
-- [ ] 📱 Mobile-responsive design
+- [ ] ✅ Email format validation (regex)
+- [ ] 📱 Improved mobile-responsive design
 - [ ] 🔐 User authentication
 - [ ] 🧪 Unit tests
+- [ ] ⏱️ Rate limiting on form submissions
 
 ---
 
