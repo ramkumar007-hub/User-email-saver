@@ -5,63 +5,58 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h2>User Management System</h2>
+    <div class="container">
+        <h2>User Management</h2>
 
-    <!-- Error message -->
-    {% if error %}
-    <div class="error-msg">{{ error }}</div>
-    {% endif %}
-
-    <!-- Add user form -->
-    <form method="POST">
-        <input type="text" name="name" placeholder="Enter Name" required
-               maxlength="50">
-        <input type="email" name="email" placeholder="Enter Email" required
-               maxlength="100">
-        <button type="submit" id="addBtn">Add User</button>
-    </form>
-
-    <!-- Search bar -->
-    <div class="search-bar">
-        <form method="GET" action="/">
-            <input type="text" name="q" placeholder="Search by name or email..."
-                   value="{{ search }}">
-            <button type="submit">Search</button>
-            {% if search %}
-            <a href="/" class="clear-btn">Clear</a>
-            {% endif %}
-        </form>
-    </div>
-
-    <!-- User count -->
-    <p class="user-count">{{ users | length}} user(s) shown</p>
-
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Action</th>
-        </tr>
-        {% if users %}
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>
-                    <form method="POST" action="/delete/{{ user.id }}"
-                          onsubmit="return confirm('Delete {{ user.name }}?');">
-                        <button type="submit" class="delete-btn">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="4" class="no-results">No users found.</td>
-            </tr>
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
         {% endif %}
-    </table>
+
+        <form method="POST" class="add-form">
+            <input type="text" name="name" placeholder="Name" required maxlength="50">
+            <input type="email" name="email" placeholder="Email" required maxlength="100">
+            <button type="submit">Add</button>
+        </form>
+
+        <div class="search-bar">
+            <form method="GET" action="/">
+                <input type="text" name="q" placeholder="Search..." value="{{ search }}">
+                <button type="submit">Search</button>
+                {% if search %}
+                <a href="/" class="clear-btn">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+
+        <p class="user-count">{{ users | length }} users</p>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            {% if users %}
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <form method="POST" action="/delete/{{ user.id }}"
+                              onsubmit="return confirm('Delete {{ user.name }}?');">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="no-results">No users found</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
 </body>
 </html>
