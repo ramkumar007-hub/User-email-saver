@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600&family=Eternal+Bloom&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Hind Madurai', -apple-system, sans-serif;
     background: #ffffff;
-    color: #1a1a2e;
+    color: #111111;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -18,11 +18,11 @@ body {
 }
 
 h2 {
-    font-family: 'Eternal Bloom', cursive;
-    font-size: 42px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 44px;
     font-weight: 400;
     margin-bottom: 32px;
-    color: #ba808b;
+    color: #9e6a75;
     text-align: left;
     letter-spacing: 1px;
 }
@@ -47,9 +47,9 @@ h2 {
 }
 
 .add-form input:focus {
-    border-color: #ba808b;
+    border-color: #9e6a75;
     background: #fff;
-    box-shadow: 0 0 0 3px #f2b9c4;
+    box-shadow: 0 0 0 3px rgba(158,106,117,0.18);
 }
 
 .add-form input::placeholder {
@@ -58,7 +58,7 @@ h2 {
 
 .add-form button {
     padding: 11px 22px;
-    background: #ba808b;
+    background: #9e6a75;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -69,7 +69,7 @@ h2 {
     transition: background 0.2s;
 }
 
-.add-form button:hover { background: #c78c96; }
+.add-form button:hover { background: #8a5a65; }
 
 /* ---- Error ---- */
 .error-msg {
@@ -106,9 +106,9 @@ h2 {
 }
 
 .search-bar input:focus {
-    border-color: #ba808b;
+    border-color: #9e6a75;
     background: #fff;
-    box-shadow: 0 0 0 3px #f2b9c4;
+    box-shadow: 0 0 0 3px rgba(158,106,117,0.18);
 }
 
 .search-bar input::placeholder { color: #555; }
@@ -128,17 +128,17 @@ h2 {
 
 .clear-btn {
     font-size: 13px;
-    color: #ba808b;
+    color: #9e6a75;
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.clear-btn:hover { color: #c78c96; }
+.clear-btn:hover { color: #8a5a65; }
 
 /* ---- User count ---- */
 .user-count {
     font-size: 13px;
-    color: #333;
+    color: #222;
     margin-bottom: 12px;
 }
 
@@ -152,26 +152,26 @@ th {
     text-align: left;
     font-size: 12px;
     font-weight: 500;
-    color: #ba808b;
+    color: #9e6a75;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0 14px 10px;
-    border-bottom: 1.5px solid #e3aab5;
+    border-bottom: 1.5px solid #c9959f;
 }
 
 td {
     padding: 14px;
     font-size: 14px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #eaeaea;
 }
 
 tr:last-child td { border-bottom: none; }
 
-tr:hover td { background: #fdf5f6; }
+tr:hover td { background: #faf0f1; }
 
 .no-results {
     text-align: center;
-    color: #666;
+    color: #555;
     padding: 40px 0;
     font-size: 14px;
 }
@@ -191,5 +191,5 @@ tr:hover td { background: #fdf5f6; }
 
 .delete-btn:hover {
     background: #fef2f2;
-    border-color: #dc2626;
+    border-color: #c0392b;
 }
