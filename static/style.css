@@ -5,7 +5,7 @@
 body {
     font-family: 'Hind Madurai', -apple-system, sans-serif;
     background: #ffffff;
-    color: #111111;
+    color: #0d0d0d;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -22,7 +22,7 @@ h2 {
     font-size: 44px;
     font-weight: 400;
     margin-bottom: 32px;
-    color: #9e6a75;
+    color: #5e3a42;
     text-align: left;
     letter-spacing: 1px;
 }
@@ -37,28 +37,28 @@ h2 {
 .add-form input {
     flex: 1;
     padding: 11px 14px;
-    border: 1.5px solid #e0e0e0;
+    border: 1.5px solid #a0a0a0;
     border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
     outline: none;
     transition: border-color 0.2s;
-    background: #fafafa;
+    background: #f0f0f0;
 }
 
 .add-form input:focus {
-    border-color: #9e6a75;
+    border-color: #5e3a42;
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(158,106,117,0.18);
+    box-shadow: 0 0 0 3px rgba(94,58,66,0.25);
 }
 
 .add-form input::placeholder {
-    color: #555;
+    color: #333;
 }
 
 .add-form button {
     padding: 11px 22px;
-    background: #9e6a75;
+    background: #5e3a42;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -69,13 +69,13 @@ h2 {
     transition: background 0.2s;
 }
 
-.add-form button:hover { background: #8a5a65; }
+.add-form button:hover { background: #4a2d34; }
 
 /* ---- Error ---- */
 .error-msg {
     background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
     padding: 11px 14px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -96,26 +96,26 @@ h2 {
 .search-bar input {
     flex: 1;
     padding: 10px 14px;
-    border: 1.5px solid #e0e0e0;
+    border: 1.5px solid #a0a0a0;
     border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
     outline: none;
     transition: border-color 0.2s;
-    background: #fafafa;
+    background: #f0f0f0;
 }
 
 .search-bar input:focus {
-    border-color: #9e6a75;
+    border-color: #5e3a42;
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(158,106,117,0.18);
+    box-shadow: 0 0 0 3px rgba(94,58,66,0.25);
 }
 
-.search-bar input::placeholder { color: #555; }
+.search-bar input::placeholder { color: #333; }
 
 .search-bar button {
     padding: 10px 18px;
-    background: #f0f0f0;
+    background: #c0c0c0;
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -124,21 +124,21 @@ h2 {
     transition: background 0.2s;
 }
 
-.search-bar button:hover { background: #e0e0e0; }
+.search-bar button:hover { background: #a8a8a8; }
 
 .clear-btn {
     font-size: 13px;
-    color: #9e6a75;
+    color: #5e3a42;
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.clear-btn:hover { color: #8a5a65; }
+.clear-btn:hover { color: #4a2d34; }
 
 /* ---- User count ---- */
 .user-count {
     font-size: 13px;
-    color: #222;
+    color: #0d0d0d;
     margin-bottom: 12px;
 }
 
@@ -152,26 +152,26 @@ th {
     text-align: left;
     font-size: 12px;
     font-weight: 500;
-    color: #9e6a75;
+    color: #5e3a42;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0 14px 10px;
-    border-bottom: 1.5px solid #c9959f;
+    border-bottom: 1.5px solid #8a5a65;
 }
 
 td {
     padding: 14px;
     font-size: 14px;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #b0b0b0;
 }
 
 tr:last-child td { border-bottom: none; }
 
-tr:hover td { background: #faf0f1; }
+tr:hover td { background: #f0dce0; }
 
 .no-results {
     text-align: center;
-    color: #555;
+    color: #333;
     padding: 40px 0;
     font-size: 14px;
 }
@@ -180,8 +180,8 @@ tr:hover td { background: #faf0f1; }
 .delete-btn {
     padding: 6px 14px;
     background: none;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
     border-radius: 6px;
     font-size: 12px;
     font-family: inherit;
@@ -191,5 +191,5 @@ tr:hover td { background: #faf0f1; }
 
 .delete-btn:hover {
     background: #fef2f2;
-    border-color: #c0392b;
+    border-color: #7f1d1d;
 }

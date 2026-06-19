@@ -3,7 +3,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-# --- Validation limits ---
+#Validation limits
 MAX_NAME_LEN = 50
 MAX_EMAIL_LEN = 100
 MAX_USERS = 50
@@ -21,7 +21,7 @@ def index():
     error = None
 
     if request.method == 'POST':
-        name = request.form.get('name', '').strip()
+        name = request.form.get('name', '').strip().capitalize()
         email = request.form.get('email', '').strip()
 
         # --- Input validation ---
@@ -40,7 +40,6 @@ def index():
                 error = "This email is already registered."
 
         if not error:
-            # Check user count limit
             count = conn.execute('SELECT COUNT(*) FROM users').fetchone()[0]
             if count >= MAX_USERS:
                 error = f"Maximum of {MAX_USERS} users reached."
@@ -51,7 +50,7 @@ def index():
                 conn.close()
                 return redirect('/')
 
-    # --- Search ---
+    #Searching
     search_query = request.args.get('q', '').strip()
     if search_query:
         users = conn.execute(
@@ -68,8 +67,17 @@ def index():
 @app.route('/delete/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     conn = get_db_connection()
+
+    # Delete the user
     conn.execute('DELETE FROM users WHERE id = ?', (user_id,))
     conn.commit()
+    rows = conn.execute('SELECT name, email FROM users ORDER BY id').fetchall()
+    conn.execute('DELETE FROM users')
+    for row in rows:
+        conn.execute('INSERT INTO users (name, email) VALUES (?, ?)',
+                     (row['name'], row['email']))
+    conn.commit()
+
     conn.close()
     return redirect('/')
 
