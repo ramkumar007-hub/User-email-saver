@@ -6,17 +6,34 @@
 </head>
 <body>
     <div class="container">
-        <h2>USER MANAGEMENT</h2>
+        <div class="nav-bar">
+            <h2>USER MANAGEMENT</h2>
+            <div class="nav-links">
+                {% if current_user.is_authenticated %}
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+                {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+                {% endif %}
+            </div>
+        </div>
 
         {% if error %}
         <div class="error-msg">{{ error }}</div>
         {% endif %}
 
+        {% if current_user.is_authenticated %}
         <form method="POST" class="add-form">
             <input type="text" name="name" placeholder="Name" required maxlength="50" autocapitalize="words" style="text-transform: capitalize;">
             <input type="email" name="email" placeholder="Email" required maxlength="100">
             <button type="submit">Add</button>
         </form>
+        {% else %}
+        <div class="auth-prompt">
+            <p>Please <a href="/login">login</a> to add or manage users.</p>
+        </div>
+        {% endif %}
 
         <div class="search-bar">
             <form method="GET" action="/">
@@ -35,7 +52,9 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                {% if current_user.is_authenticated %}
                 <th></th>
+                {% endif %}
             </tr>
             {% if users %}
                 {% for user in users %}
@@ -43,17 +62,19 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
+                    {% if current_user.is_authenticated %}
                     <td>
                         <form method="POST" action="/delete/{{ user.id }}"
                               onsubmit="return confirm('Delete {{ user.name }}?');">
                             <button type="submit" class="delete-btn">Delete</button>
                         </form>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="4" class="no-results">No users found</td>
+                    <td colspan="{% if current_user.is_authenticated %}4{% else %}3{% endif %}" class="no-results">No users found</td>
                 </tr>
             {% endif %}
         </table>

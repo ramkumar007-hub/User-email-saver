@@ -1,6 +1,6 @@
-# 📧 User Management System
+# 📧 User Management System — Task 2: Authentication
 
-A simple and clean **User Management System** built with Flask and SQLite. Add users with their name and email, search through them, and delete them — all in a lightweight full-stack Python application.
+A **User Management System** with full **authentication** (Register, Login, Logout) built with Flask and SQLite. This project extends previous project by adding secure user authentication while preserving all original features.
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue?logo=python)
 ![Flask](https://img.shields.io/badge/Flask-3.x-green?logo=flask)
@@ -11,25 +11,24 @@ A simple and clean **User Management System** built with Flask and SQLite. Add u
 
 ## ✨ Features
 
-- ➕ **Add Users** — Submit a name and email through a clean form
-- 📋 **View All Users** — See all saved users in a structured table
-- 🔍 **Search** — Filter users by name or email with a live search bar
-- 🗑️ **Delete Users** — Remove users with a confirmation dialog
-- 🛡️ **Input Validation** — Length limits, duplicate checks, and user cap to prevent crashes
-- 💾 **Persistent Storage** — Data saved in a local SQLite database
-- 🎨 **Clean UI** — Minimal, responsive design with custom CSS
-- ⚡ **Lightweight** — No heavy frameworks, just Flask + SQLite
+- 🔐 **User Registration** — Create an account with name, email, username, and password
+- 🔑 **User Login** — Secure login with username and password verification
+- 🚪 **Logout** — End session securely
+- 🛡️ **Password Hashing** — All passwords hashed using Werkzeug (never stored in plain text)
+- 📊 **Protected Dashboard** — Only accessible to logged-in users
+- 🔒 **Protected Actions** — Add/delete users requires authentication
+- ✅ **Input Validation** — Length limits, duplicate checks, password matching
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer          | Technology       |
-|---------------|------------------|
-| **Backend**    | Python 3, Flask  |
-| **Database**   | SQLite3          |
-| **Frontend**   | HTML, CSS        |
-| **Templating** | Jinja2 (Flask)   |
+| Layer          | Technology                    |
+|---------------|-------------------------------|
+| **Backend**    | Python 3, Flask               |
+| **Auth**       | Flask-Login, Werkzeug Hash    |
+| **Database**   | SQLite3                       |
+| **Frontend**   | HTML, CSS, Jinja2             |
 
 ---
 
@@ -37,14 +36,17 @@ A simple and clean **User Management System** built with Flask and SQLite. Add u
 
 ```
 python-fullstack-task1/
-├── app.py              # Flask application (routes, DB logic, validation)
-├── database.db         # SQLite database (users table)
+├── app.py                 # Flask app (auth routes + user management)
+├── database.db            # SQLite database (users table with auth columns)
 ├── static/
-│   └── style.css       # Stylesheet for the UI
+│   └── style.css          # Stylesheet (auth + dashboard styles)
 ├── templates/
-│   └── index.html      # Main page template (form, search, user table)
-├── LICENSE             # MIT License
-└── README.md           # This file
+│   ├── index.html         # Main page (user management, auth-aware)
+│   ├── register.html      # Registration form
+│   ├── login.html         # Login form
+│   └── dashboard.html     # Protected dashboard
+├── LICENSE                # MIT License
+└── README.md              # This file
 ```
 
 ---
@@ -73,7 +75,7 @@ source .venv/bin/activate    # Linux / Mac / Arch (zsh)
 
 **3. Install dependencies**
 ```bash
-pip install flask
+pip install flask flask-login
 ```
 
 **4. Run the application**
@@ -88,36 +90,43 @@ http://127.0.0.1:5000
 
 ---
 
-## 📸 Screenshots
+## 🔐 Authentication Flow
 
-### Home Page — Add, Search & Delete Users
-```
-┌──────────────────────────────────────────────┐
-│          User Management System              │
-│                                              │
-│  [Name________] [Email________] [Add User]   │
-│                                              │
-│  [Search___________________] [Search] [Clear]│
-│  3 user(s) shown                             │
-│  ┌────┬──────────┬───────────────┬────────┐  │
-│  │ ID │   Name   │     Email     │ Action │  │
-│  ├────┼──────────┼───────────────┼────────┤  │
-│  │  1 │ John     │ john@mail.com │[Delete]│  │
-│  │  2 │ Jane     │ jane@mail.com │[Delete]│  │
-│  │  3 │ Bob      │ bob@mail.com  │[Delete]│  │
-│  └────┴──────────┴───────────────┴────────┘  │
-└──────────────────────────────────────────────┘
-```
+### Registration Flow
+1. User visits `/register`
+2. Fills in: Name, Email, Username, Password, Confirm Password
+3. Server validates all fields (length, duplicates, password match)
+4. Password is hashed using `werkzeug.security.generate_password_hash`
+5. User is stored in SQLite database
+6. Redirected to `/login` with success message
 
----
+### Login Flow
+1. User visits `/login`
+2. Enters: Username, Password
+3. Server looks up user by username
+4. Password verified using `werkzeug.security.check_password_hash`
+5. `login_user()` creates a Flask-Login session (handles session management automatically)
+6. Redirected to `/dashboard`
 
-## 🗄️ Database Schema
+### Logout Flow
+1. User clicks Logout
+2. `logout_user()` destroys the Flask-Login session
+3. Redirected to `/login`
+
+### Protected Routes
+- `/dashboard` — Only accessible when logged in (`@login_required` decorator)
+- Add/Delete users — Only accessible when logged in (`@login_required` decorator)
+- Unauthenticated users are automatically redirected to `/login`
+
+## 🗄️ Database Schema (Updated)
 
 ```sql
 CREATE TABLE users (
-    id    INTEGER PRIMARY KEY AUTOINCREMENT,
-    name  TEXT,
-    email TEXT
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    name          TEXT,
+    email         TEXT,
+    username      TEXT,
+    password_hash TEXT
 );
 ```
 
@@ -125,47 +134,69 @@ CREATE TABLE users (
 
 ## 🔌 API Routes
 
-| Method | Route              | Description                          |
-|--------|--------------------|--------------------------------------|
-| `GET`  | `/`                | Render page with all users           |
-| `POST` | `/`                | Add a new user (name + email)        |
-| `GET`  | `/?q=<search>`     | Search users by name or email        |
-| `POST` | `/delete/<user_id>`| Delete a user by ID                  |
+| Method | Route              | Description                          | Auth Required |
+|--------|--------------------|--------------------------------------|:---:|
+| `GET`  | `/`                | Render page with all users           | No |
+| `POST` | `/`                | Add a new user (name + email)        | Yes |
+| `GET`  | `/?q=<search>`     | Search users by name or email        | No |
+| `POST` | `/delete/<user_id>`| Delete a user by ID                  | Yes |
+| `GET`  | `/register`        | Show registration form               | No* |
+| `POST` | `/register`        | Process registration                 | No* |
+| `GET`  | `/login`           | Show login form                      | No* |
+| `POST` | `/login`           | Process login                        | No* |
+| `GET`  | `/logout`          | End session                          | Yes |
+| `GET`  | `/dashboard`       | Protected dashboard                  | Yes |
+
+\* Redirects to dashboard if already logged in
 
 ---
 
-## 🛡️ Input Validation & Safety
+## 🛡️ Security Features
 
-| Protection            | Details                                  |
-|-----------------------|------------------------------------------|
-| **Required fields**   | Name and email cannot be empty           |
-| **Name length**       | Max 50 characters (`MAX_NAME_LEN`)       |
-| **Email length**      | Max 100 characters (`MAX_EMAIL_LEN`)     |
-| **Duplicate email**   | Prevents registering the same email twice|
-| **User cap**          | Max 50 users total (`MAX_USERS`)         |
-| **SQL Injection**     | All queries use parameterized statements |
-| **Delete confirm**    | Browser confirmation dialog before delete|
-| **POST for delete**   | Destructive action uses POST, not GET    |
-
----
-
-## 🧩 How It Works
-
-1. **Add User** → Name + Email submitted via POST → validated → inserted into SQLite → page reloads
-2. **Search** → Query sent via GET with `?q=` → `LIKE` query filters results → table updates
-3. **Delete User** → POST to `/delete/<id>` → confirmation dialog → row removed → page reloads
-4. **Validation** → Every input is checked server-side (length, duplicates, capacity) with user-friendly error messages
+| Protection              | Details                                          |
+|-------------------------|--------------------------------------------------|
+| **Password Hashing**    | Werkzeug `generate_password_hash` (pbkdf2:sha256)|
+| **Session Management**  | Flask-Login with `LoginManager` and random secret key |
+| **Input Validation**    | Length limits, required fields, duplicate checks  |
+| **Password Matching**   | Confirm password field must match                |
+| **Min Password Length** | 6 characters minimum                             |
+| **SQL Injection**       | All queries use parameterized statements         |
+| **Protected Routes**    | Add/delete require authentication               |
+| **POST for Delete**     | Destructive action uses POST, not GET            |
+| **Delete Confirm**      | Browser confirmation dialog before delete        |
 
 ---
 
-## 🔮 Future Improvements
+##  How It Works
 
-- [ ] ✏️ Edit user functionality
-- [ ] ✅ Email format validation (regex)
-- [ ] 📱 Improved mobile-responsive design
-- [ ] 🔐 User authentication
-- [ ] 🧪 Unit tests
-- [ ] ⏱️ Rate limiting on form submissions
+1. **Register** → Fill form → Validate → Hash password → Store in DB → Redirect to login
+2. **Login** → Enter credentials → Verify hash → Create session → Redirect to dashboard
+3. **Dashboard** → Protected page showing user info → Link to manage users
+4. **Add User** (logged in) → POST to `/` → Validate → Insert into DB → Reload
+5. **Search** → GET with `?q=` → `LIKE` query → Filter results (works without login)
+6. **Delete User** (logged in) → POST to `/delete/<id>` → Confirmation → Remove → Reorder IDs
+7. **Logout** → Clear session → Redirect to login
+
+---
+
+## 📖 References
+
+- [Flask Sessions](https://flask.palletsprojects.com/en/latest/quickstart/#sessions)
+- [Werkzeug Security](https://werkzeug.palletsprojects.com)
+- [OWASP Password Guidelines](https://owasp.org/www-project-top-ten/)
+
+---
+
+##  Future Improvements
+
+- [ ]  Edit user functionality
+- [ ]  Email format validation (regex)
+- [ ]  Improved mobile-responsive design
+- [ ]  Password reset / forgot password
+- [ ]  User roles (admin, regular user)
+- [ ]  Unit tests
+- [ ] ⏱ Rate limiting on login attempts
+- [ ]  CSRF protection (Flask-WTF)
 
 ---
 
@@ -181,4 +212,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-> Built with ❤️ using Flask & SQLite
+> Built with ❤️ using Flask & SQLite - Authentication System
