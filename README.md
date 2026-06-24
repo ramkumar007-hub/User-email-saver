@@ -1,4 +1,4 @@
-# 📧 User Management System — Task 2: Authentication
+# 📧 User Management System : Authentication
 
 A **User Management System** with full **authentication** (Register, Login, Logout) built with Flask and SQLite. This project extends previous project by adding secure user authentication while preserving all original features.
 
